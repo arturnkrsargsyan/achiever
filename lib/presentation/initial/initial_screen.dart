@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:achiever/application/auth/auth_bloc.dart';
+import 'package:achiever/presentation/auth/core/auth_bloc_listener.dart';
 import 'package:achiever/presentation/core/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +17,10 @@ class InitialScreen extends StatefulWidget {
 
 class _InitialScreenState extends State<InitialScreen> {
   void checkAndNavigate() {
+    log(
+      'Checking if user is authenticated',
+    );
+
     context.read<AuthBloc>().add(const AuthEvent.started());
   }
 
@@ -21,26 +28,22 @@ class _InitialScreenState extends State<InitialScreen> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await Future.delayed(const Duration(milliseconds: 1500));
-    });
 
-    checkAndNavigate();
+      checkAndNavigate();
+    });
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AuthBloc, AuthState>(
-      listener: (context, authState) {
-        authState.whenOrNull(
-          authenticated: () {
-            context.router.replace(const AuthRoute());
-          },
-        );
-      },
+    return AuthBlocListener(
+      onFailure: () => context.router.replace(
+        const AuthRoute(),
+      ),
       child: const Scaffold(
         body: Center(
-          child: Text('Welcome to Achiever'),
+          child: Text('Initial, Welcome to Achiever'),
         ),
       ),
     );

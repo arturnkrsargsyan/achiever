@@ -4,7 +4,9 @@ part of 'auth_bloc.dart';
 class AuthState with _$AuthState {
   const factory AuthState.initial() = _Initial;
 
-  const factory AuthState.authenticated() = _Authenticated;
+  const factory AuthState.authenticated({
+    required bool isNewUser,
+  }) = _Authenticated;
 
   const factory AuthState.unauthenticated() = _Unauthenticated;
 
