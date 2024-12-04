@@ -6,6 +6,7 @@ extension AuthGlobalListenerX on AppGlobalListeners {
       unauthenticated: () {
         // Reset all global blocs/cubits
         context.read<UserWatcherCubit>().reset();
+        context.read<AchievementsWatcherCubit>().reset();
       },
     );
   }

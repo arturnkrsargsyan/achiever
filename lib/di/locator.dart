@@ -1,3 +1,5 @@
+import 'package:achiever/application/achievement/performer/achievement_performer_bloc.dart';
+import 'package:achiever/application/achievement/watcher/achievements_watcher_cubit.dart';
 import 'package:achiever/application/auth/auth_bloc.dart';
 import 'package:achiever/application/user/performer/user_performer_bloc.dart';
 import 'package:achiever/application/user/watcher/user_watcher_cubit.dart';
@@ -16,7 +18,11 @@ abstract class Locator {
   // performers
   static UserPerformerBloc get userPerformerBloc =>
       _gi.get<UserPerformerBloc>();
+  static AchievementPerformerBloc get achievementPerformerBloc =>
+      _gi.get<AchievementPerformerBloc>();
 
   // Watchers
   static UserWatcherCubit get userWatcherCubit => _gi.get<UserWatcherCubit>();
+  static AchievementsWatcherCubit get achievementsWatcherCubit =>
+      _gi.get<AchievementsWatcherCubit>();
 }

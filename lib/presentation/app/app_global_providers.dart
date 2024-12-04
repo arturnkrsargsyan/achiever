@@ -1,3 +1,4 @@
+import 'package:achiever/application/achievement/watcher/achievements_watcher_cubit.dart';
 import 'package:achiever/application/auth/auth_bloc.dart';
 import 'package:achiever/application/user/watcher/user_watcher_cubit.dart';
 import 'package:achiever/di/locator.dart';
@@ -21,6 +22,9 @@ class AppGlobalProviders extends StatelessWidget {
         ),
         BlocProvider<UserWatcherCubit>(
           create: (_) => Locator.userWatcherCubit..watch(),
+        ),
+        BlocProvider<AchievementsWatcherCubit>(
+          create: (_) => Locator.achievementsWatcherCubit..watch(),
         ),
       ],
       child: child,
