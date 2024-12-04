@@ -1,4 +1,5 @@
 import 'package:achiever/di/locator.dart';
+import 'package:achiever/presentation/app/app_global_listeners.dart';
 import 'package:achiever/presentation/app/app_global_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -10,12 +11,14 @@ class AchieverApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return OverlaySupport.global(
       child: AppGlobalProviders(
-        child: MaterialApp.router(
-          title: 'Achiever',
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
+        child: AppGlobalListeners(
+          child: MaterialApp.router(
+            title: 'Achiever',
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
+            ),
+            routerConfig: Locator.router.config(),
           ),
-          routerConfig: Locator.router.config(),
         ),
       ),
     );

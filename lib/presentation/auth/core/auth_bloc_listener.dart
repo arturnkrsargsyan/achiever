@@ -1,6 +1,8 @@
 import 'dart:developer';
 
 import 'package:achiever/application/auth/auth_bloc.dart';
+import 'package:achiever/application/user/performer/user_performer_bloc.dart';
+import 'package:achiever/application/user/watcher/user_watcher_cubit.dart';
 import 'package:achiever/presentation/core/in_app_notifications/toast.dart';
 import 'package:achiever/presentation/core/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
@@ -31,8 +33,24 @@ class AuthBlocListener extends StatelessWidget {
 
             onFailure?.call();
           },
-          authenticated: (isNewUser) {
+          authenticated: (isNewUser) async {
             log('User is authenticated, isNewUser: $isNewUser');
+
+            if (isNewUser) {
+              final userPerformerBloc = context.read<UserPerformerBloc>();
+
+              userPerformerBloc.add(
+                const UserPerformerEvent.create(),
+              );
+
+              await userPerformerBloc.wait();
+            }
+
+            final userWatcherCubit = context.read<UserWatcherCubit>();
+
+            userWatcherCubit.watch();
+
+            await userWatcherCubit.wait();
 
             context.router.replace(const HomeRoute());
             return;

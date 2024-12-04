@@ -1,4 +1,5 @@
 import 'package:achiever/application/auth/auth_bloc.dart';
+import 'package:achiever/application/user/watcher/user_watcher_cubit.dart';
 import 'package:achiever/presentation/auth/core/auth_bloc_listener.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,10 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userWatcher = context.watch<UserWatcherCubit>();
+
+    final user = userWatcher.state.user;
+
     return AuthBlocListener(
       child: Scaffold(
         appBar: AppBar(
@@ -19,6 +24,10 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             children: [
               const Text('Welcome to Achiever'),
+              const SizedBox(height: 16),
+              Text(
+                user?.email ?? 'No user',
+              ),
               ElevatedButton(
                 onPressed: () {
                   context.read<AuthBloc>().add(const AuthEvent.signOut());

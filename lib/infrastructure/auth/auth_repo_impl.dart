@@ -86,7 +86,16 @@ class AuthRepoImpl implements IAuthRepository {
   @override
   Future<ApiResponse> signOut() async {
     try {
+      final googleSignIn = GoogleSignIn();
+      final currUser = _firebaseAuth.currentUser;
+
       await _firebaseAuth.signOut();
+
+      final String? providerId = currUser?.providerData.first.providerId;
+
+      if (providerId == 'google.com') {
+        await googleSignIn.signOut();
+      }
 
       return const Right(null);
     } catch (e) {
@@ -108,6 +117,14 @@ class AuthRepoImpl implements IAuthRepository {
       );
 
       return Right(userCredential);
+    } on FirebaseAuthException catch (e) {
+      final message = AuthErrorCodes(e.code).message;
+
+      return Left(
+        ApiFailure(
+          message: message,
+        ),
+      );
     } catch (e) {
       return Left(
         ApiFailure.auth(AuthFailures.signUp),
@@ -117,6 +134,10 @@ class AuthRepoImpl implements IAuthRepository {
 
   @override
   Future<bool> checkIfUserIsSignedIn() async {
+    if (_firebaseAuth.currentUser == null) {
+      return false;
+    }
+
     await _firebaseAuth.currentUser?.reload();
 
     final user = _firebaseAuth.currentUser;

@@ -9,6 +9,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
+import 'package:achiever/domain/user/entities/user.dart' as my;
 
 @Singleton(as: IUserRepository)
 class UserRepoImpl implements IUserRepository {
@@ -78,8 +79,24 @@ class UserRepoImpl implements IUserRepository {
   }
 
   @override
-  ApiResponse<Stream> watch() {
-    // TODO: implement watch
-    throw UnimplementedError();
+  ApiResponse<Stream<my.User>> watch() {
+    try {
+      final userDocRef =
+          _firestore.collection(FirestoreCollections.users).doc(_uid);
+
+      final userStream = userDocRef.snapshots().map((snapshot) {
+        final userDto = UserDto.fromJson(snapshot.data()!);
+
+        return userDto.toEntity();
+      });
+
+      return Right(userStream);
+    } catch (e) {
+      return const Left(
+        ApiFailure(
+          message: 'Failed to watch user',
+        ),
+      );
+    }
   }
 }

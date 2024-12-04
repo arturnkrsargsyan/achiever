@@ -1,5 +1,7 @@
 import 'package:achiever/application/auth/auth_bloc.dart';
+import 'package:achiever/application/user/performer/user_performer_bloc.dart';
 import 'package:achiever/core/utils/reg_exp_validator.dart';
+import 'package:achiever/di/locator.dart';
 import 'package:achiever/presentation/auth/core/auth_bloc_listener.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -25,85 +27,88 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return AuthBlocListener(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(isSignUp ? 'Sign Up' : 'Sign In'),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextFormField(
-                  controller: emailController,
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your email';
-                    }
-
-                    if (!RegExpValidator.isEmail(value)) {
-                      return 'Please enter a valid email';
-                    }
-
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: passwordController,
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        obscureText ? Icons.visibility : Icons.visibility_off,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          obscureText = !obscureText;
-                        });
-                      },
+    return BlocProvider<UserPerformerBloc>(
+      create: (context) => Locator.userPerformerBloc,
+      child: AuthBlocListener(
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(isSignUp ? 'Sign Up' : 'Sign In'),
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextFormField(
+                    controller: emailController,
+                    decoration: const InputDecoration(
+                      labelText: 'Email',
+                      border: OutlineInputBorder(),
                     ),
-                    border: const OutlineInputBorder(),
-                  ),
-                  obscureText: obscureText,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your password';
-                    }
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your email';
+                      }
 
-                    if (RegExpValidator.isEmail(value)) {
-                      return 'Please enter a valid password';
-                    }
+                      if (!RegExpValidator.isEmail(value)) {
+                        return 'Please enter a valid email';
+                      }
 
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: _handleMailAuth,
-                  child: Text(isSignUp ? 'Sign Up' : 'Sign In'),
-                ),
-                TextButton(
-                  onPressed: _toggleAuthMode,
-                  child: Text(
-                    isSignUp
-                        ? 'Already have an account? Sign In'
-                        : 'Don\'t have an account? Sign Up',
+                      return null;
+                    },
                   ),
-                ),
-                const SizedBox(height: 20),
-                IconButton(
-                  icon: const Icon(Icons.g_mobiledata),
-                  onPressed: _handleGoogleSignIn,
-                ),
-              ],
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    controller: passwordController,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          obscureText ? Icons.visibility : Icons.visibility_off,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            obscureText = !obscureText;
+                          });
+                        },
+                      ),
+                      border: const OutlineInputBorder(),
+                    ),
+                    obscureText: obscureText,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your password';
+                      }
+
+                      if (RegExpValidator.isEmail(value)) {
+                        return 'Please enter a valid password';
+                      }
+
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: _handleMailAuth,
+                    child: Text(isSignUp ? 'Sign Up' : 'Sign In'),
+                  ),
+                  TextButton(
+                    onPressed: _toggleAuthMode,
+                    child: Text(
+                      isSignUp
+                          ? 'Already have an account? Sign In'
+                          : 'Don\'t have an account? Sign Up',
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  IconButton(
+                    icon: const Icon(Icons.g_mobiledata),
+                    onPressed: _handleGoogleSignIn,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
